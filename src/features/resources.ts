@@ -10,37 +10,37 @@ import { RESEARCH_TOOLS_RESOURCE } from "./research-tools";
 export const featureResources: IResourceItem[] = [
   {
     name: PAPERS_RESOURCE,
-    list: "/papers",
+    list: "/dashboard/papers",
     meta: { label: "Papers" },
   },
   {
     name: FEATURED_CASES_RESOURCE,
-    list: "/featured-cases",
+    list: "/dashboard/featured-cases",
     meta: { label: "Featured Cases" },
   },
   {
     name: RESEARCH_TOOLS_RESOURCE,
-    list: "/research-tools",
+    list: "/dashboard/research-tools",
     meta: { label: "Research Tools" },
   },
   {
     name: DATASET_ITEMS_RESOURCE,
-    list: "/datasets",
+    list: "/dashboard/datasets",
     meta: { label: "Datasets" },
   },
   {
     name: DATASET_CHART_DATA_RESOURCE,
-    list: "/datasets/chart-data",
+    list: "/dashboard/datasets/chart-data",
     meta: { label: "Dataset Chart Data" },
   },
   {
     name: DYNAMIC_NEWS_RESOURCE,
-    list: "/dynamic-news",
+    list: "/dashboard/dynamic-news",
     meta: { label: "Dynamic News" },
   },
   {
     name: PARTNERS_RESOURCE,
-    list: "/partners",
+    list: "/dashboard/partners",
     meta: { label: "Partners" },
   },
 ];

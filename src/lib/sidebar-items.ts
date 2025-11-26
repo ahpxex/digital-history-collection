@@ -17,17 +17,17 @@ export const mainMenuItems: MenuGroup[] = [
   {
     groupLabel: "数字历史",
     items: [
-      { label: "论文", href: "/papers", icon: TableIcon },
-      { label: "精选案例", href: "/featured-cases", icon: TableIcon },
-      { label: "研究工具", href: "/research-tools", icon: TableIcon },
-      { label: "数据集", href: "/datasets", icon: TableIcon },
+      { label: "论文", href: "/dashboard/papers", icon: TableIcon },
+      { label: "精选案例", href: "/dashboard/featured-cases", icon: TableIcon },
+      { label: "研究工具", href: "/dashboard/research-tools", icon: TableIcon },
+      { label: "数据集", href: "/dashboard/datasets", icon: TableIcon },
       {
         label: "数据集图表数据",
-        href: "/datasets/chart-data",
+        href: "/dashboard/datasets/chart-data",
         icon: TableIcon,
       },
-      { label: "动态新闻", href: "/dynamic-news", icon: TableIcon },
-      { label: "合作伙伴", href: "/partners", icon: TableIcon },
+      { label: "动态新闻", href: "/dashboard/dynamic-news", icon: TableIcon },
+      { label: "合作伙伴", href: "/dashboard/partners", icon: TableIcon },
     ],
   },
 ];
