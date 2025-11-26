@@ -11,7 +11,7 @@ export default async function FeaturedCasesPage() {
   const trpc = await getTrpcCaller();
   const { data } = await trpc.featuredCases.list({
     pageSize: 50,
-    current: 1,
+    page: 1,
     sortOrder: "desc",
   });
 

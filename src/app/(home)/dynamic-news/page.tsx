@@ -11,7 +11,7 @@ export default async function DynamicNewsPage() {
   const trpc = await getTrpcCaller();
   const { data } = await trpc.dynamicNews.list({
     pageSize: 50,
-    current: 1,
+    page: 1,
     sortBy: "publishDate",
     sortOrder: "desc",
   });

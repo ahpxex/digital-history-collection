@@ -11,7 +11,7 @@ export default async function ResearchToolsPage() {
   const trpc = await getTrpcCaller();
   const { data } = await trpc.researchTools.list({
     pageSize: 50,
-    current: 1,
+    page: 1,
     sortBy: "name",
     sortOrder: "asc",
   });

@@ -11,7 +11,7 @@ export default async function PartnersPage() {
   const trpc = await getTrpcCaller();
   const { data } = await trpc.partners.list({
     pageSize: 50,
-    current: 1,
+    page: 1,
     sortBy: "name",
     sortOrder: "asc",
   });

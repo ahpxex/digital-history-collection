@@ -11,7 +11,7 @@ export default async function DatasetsPage() {
   const trpc = await getTrpcCaller();
   const { data } = await trpc.datasetItems.list({
     pageSize: 50,
-    current: 1,
+    page: 1,
     sortBy: "title",
     sortOrder: "asc",
   });
