@@ -21,6 +21,7 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { TablePaginationControls } from "./TablePaginationControls";
@@ -28,6 +29,9 @@ import { TableToolbar } from "./TableToolbar";
 import type { PaginationTableProps, PaginationTableRef } from "./types";
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 50];
+const EMPTY_FILTERS: CrudFilters = [];
+const EMPTY_SORTERS: any[] = [];
+const EMPTY_FILTER_CONFIGS: any[] = [];
 
 const getFilterValue = (filters: CrudFilter[], key: string) => {
   const match = filters.find(
@@ -64,7 +68,7 @@ function PaginationTableInner<TData extends BaseRecord>(
   {
     resource,
     columns,
-    filters = [],
+    filters = EMPTY_FILTER_CONFIGS,
     pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
     defaultPageSize = 10,
     enableSearch = true,
@@ -72,9 +76,8 @@ function PaginationTableInner<TData extends BaseRecord>(
     emptyMessage = "No data found",
     className = "",
     getRowId,
-    permanentFilters = [],
-    permanentSorters = [],
-    onTotalsChange,
+    permanentFilters = EMPTY_FILTERS,
+    permanentSorters = EMPTY_SORTERS,
     enableSelection = false,
     onSelectionChange,
   }: PaginationTableProps<TData>,
@@ -108,14 +111,6 @@ function PaginationTableInner<TData extends BaseRecord>(
   const isLoading = tableQuery.isLoading || tableQuery.isFetching;
   const totalPages =
     totalCount === 0 ? 0 : Math.max(1, Math.ceil(totalCount / pageSize));
-
-  useEffect(() => {
-    onTotalsChange?.({
-      totalCount,
-      currentPage,
-      pageSize,
-    });
-  }, [onTotalsChange, totalCount, currentPage, pageSize]);
 
   const filterValues = useMemo(() => {
     const values: Record<string, string> = {};
@@ -199,60 +194,78 @@ function PaginationTableInner<TData extends BaseRecord>(
     [getRowId],
   );
 
+  // Only compute validRowIds when selection is enabled to avoid unnecessary recalculations
   const validRowIds = useMemo(() => {
     if (!isSelectable) {
       return new Set<string>();
     }
-
     return new Set(data.map((row) => resolveRowId(row)));
   }, [data, isSelectable, resolveRowId]);
-
-  const emitSelectionChange = useCallback(
-    (nextSelected: Set<string>) => {
-      if (!isSelectable || !onSelectionChange) {
-        return;
-      }
-
-      const selectedRows = data.filter((row) =>
-        nextSelected.has(resolveRowId(row)),
-      );
-
-      onSelectionChange({
-        ids: Array.from(nextSelected),
-        rows: selectedRows,
-      });
-    },
-    [data, isSelectable, onSelectionChange, resolveRowId],
-  );
 
   const updateSelection = useCallback(
     (updater: (current: Set<string>) => Set<string>) => {
       if (!isSelectable) {
         return;
       }
-
       setSelectedKeys((previous) => updater(new Set(previous)));
     },
     [isSelectable],
   );
 
+  // Sync selectedKeys with validRowIds (remove invalid selections) - only when selection is enabled
   useEffect(() => {
+    if (!isSelectable) {
+      return;
+    }
     setSelectedKeys((previous) => {
+      // Check if any filtering is actually needed
+      let needsFiltering = false;
+      for (const key of previous) {
+        if (!validRowIds.has(key)) {
+          needsFiltering = true;
+          break;
+        }
+      }
+      if (!needsFiltering) {
+        return previous; // Return same reference to avoid re-render
+      }
       const filtered = new Set<string>();
-
       previous.forEach((key) => {
         if (validRowIds.has(key)) {
           filtered.add(key);
         }
       });
-
       return filtered;
     });
-  }, [validRowIds]);
+  }, [validRowIds, isSelectable]);
 
+  // Emit selection change to parent - only when selection is enabled
+  const prevSelectedKeysRef = useRef<Set<string>>(new Set());
+  // biome-ignore lint/correctness/useExhaustiveDependencies: data changes on every fetch but we only emit when selection changes
   useEffect(() => {
-    emitSelectionChange(selectedKeys);
-  }, [emitSelectionChange, selectedKeys]);
+    if (!isSelectable || !onSelectionChange) {
+      return;
+    }
+    // Only emit if selection actually changed (compare by content)
+    const prevKeys = prevSelectedKeysRef.current;
+    const keysChanged =
+      prevKeys.size !== selectedKeys.size ||
+      [...selectedKeys].some((key) => !prevKeys.has(key));
+
+    if (keysChanged) {
+      prevSelectedKeysRef.current = new Set(selectedKeys);
+      const selectedRows = data.filter((row) =>
+        selectedKeys.has(resolveRowId(row)),
+      );
+      onSelectionChange({
+        ids: Array.from(selectedKeys),
+        rows: selectedRows,
+      });
+    }
+    // Note: We intentionally exclude `data` from deps to avoid emitting on every data fetch
+    // The selection IDs are the source of truth, not the row objects
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedKeys, isSelectable, onSelectionChange, resolveRowId]);
 
   const table = useReactTable({
     data,

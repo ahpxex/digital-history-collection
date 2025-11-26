@@ -59,7 +59,6 @@ export default function PapersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createPaper, isLoading: isCreating } =
     useCreate<Paper>();
@@ -145,12 +144,7 @@ export default function PapersPage() {
   return (
     <TablePage
       title={papersMeta.title}
-      description={
-        <>
-          {papersMeta.description ? `${papersMeta.description} ` : null}
-          Total: {totalCount}
-        </>
-      }
+      description={papersMeta.description}
       actions={
         <Button
           color="primary"
@@ -168,11 +162,7 @@ export default function PapersPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

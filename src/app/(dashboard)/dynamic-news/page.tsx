@@ -49,7 +49,6 @@ export default function DynamicNewsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingNews, setEditingNews] = useState<DynamicNews | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createNews, isLoading: isCreating } =
     useCreate<DynamicNews>();
@@ -132,14 +131,7 @@ export default function DynamicNewsPage() {
   return (
     <TablePage
       title={dynamicNewsMeta.title}
-      description={
-        <>
-          {dynamicNewsMeta.description
-            ? `${dynamicNewsMeta.description} `
-            : null}
-          Total: {totalCount}
-        </>
-      }
+      description={dynamicNewsMeta.description}
       actions={
         <Button
           color="primary"
@@ -157,11 +149,7 @@ export default function DynamicNewsPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

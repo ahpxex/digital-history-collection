@@ -49,7 +49,6 @@ export default function DatasetItemsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<DatasetItem | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createItem, isLoading: isCreating } =
     useCreate<DatasetItem>();
@@ -132,14 +131,7 @@ export default function DatasetItemsPage() {
   return (
     <TablePage
       title={datasetItemsMeta.title}
-      description={
-        <>
-          {datasetItemsMeta.description
-            ? `${datasetItemsMeta.description} `
-            : null}
-          Total: {totalCount}
-        </>
-      }
+      description={datasetItemsMeta.description}
       actions={
         <Button
           color="primary"
@@ -157,11 +149,7 @@ export default function DatasetItemsPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

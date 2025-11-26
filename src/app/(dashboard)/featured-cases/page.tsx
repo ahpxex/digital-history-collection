@@ -55,7 +55,6 @@ export default function FeaturedCasesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCase, setEditingCase] = useState<FeaturedCase | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createCase, isLoading: isCreating } =
     useCreate<FeaturedCase>();
@@ -139,14 +138,7 @@ export default function FeaturedCasesPage() {
   return (
     <TablePage
       title={featuredCasesMeta.title}
-      description={
-        <>
-          {featuredCasesMeta.description
-            ? `${featuredCasesMeta.description} `
-            : null}
-          Total: {totalCount}
-        </>
-      }
+      description={featuredCasesMeta.description}
       actions={
         <Button
           color="primary"
@@ -164,11 +156,7 @@ export default function FeaturedCasesPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

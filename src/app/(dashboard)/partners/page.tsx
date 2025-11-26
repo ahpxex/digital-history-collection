@@ -36,7 +36,6 @@ export default function PartnersPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createPartner, isLoading: isCreating } =
     useCreate<Partner>();
@@ -116,12 +115,7 @@ export default function PartnersPage() {
   return (
     <TablePage
       title={partnersMeta.title}
-      description={
-        <>
-          {partnersMeta.description ? `${partnersMeta.description} ` : null}
-          Total: {totalCount}
-        </>
-      }
+      description={partnersMeta.description}
       actions={
         <Button
           color="primary"
@@ -139,11 +133,7 @@ export default function PartnersPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

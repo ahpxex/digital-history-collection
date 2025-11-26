@@ -52,7 +52,6 @@ export default function ResearchToolsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTool, setEditingTool] = useState<ResearchTool | null>(null);
   const [initialValues, setInitialValues] = useState<Record<string, any>>({});
-  const [totalCount, setTotalCount] = useState(0);
 
   const { mutateAsync: createTool, isLoading: isCreating } =
     useCreate<ResearchTool>();
@@ -134,14 +133,7 @@ export default function ResearchToolsPage() {
   return (
     <TablePage
       title={researchToolsMeta.title}
-      description={
-        <>
-          {researchToolsMeta.description
-            ? `${researchToolsMeta.description} `
-            : null}
-          Total: {totalCount}
-        </>
-      }
+      description={researchToolsMeta.description}
       actions={
         <Button
           color="primary"
@@ -159,11 +151,7 @@ export default function ResearchToolsPage() {
           </div>
         }
       >
-        <PaginationTable
-          ref={tableRef}
-          {...tableConfig}
-          onTotalsChange={({ totalCount }) => setTotalCount(totalCount)}
-        />
+        <PaginationTable ref={tableRef} {...tableConfig} />
       </Suspense>
 
       <EntityFormModal

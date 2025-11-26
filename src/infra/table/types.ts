@@ -62,12 +62,6 @@ export interface PaginationTableProps<TData extends BaseRecord>
   permanentFilters?: CrudFilters;
   /** Permanent sorters applied to all queries */
   permanentSorters?: CrudSort[];
-  /** Callback when totals change */
-  onTotalsChange?: (payload: {
-    totalCount: number;
-    currentPage: number;
-    pageSize: number;
-  }) => void;
   /** Enable row selection */
   enableSelection?: boolean;
   /** Callback when selection changes */
